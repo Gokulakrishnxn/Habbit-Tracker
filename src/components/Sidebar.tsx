@@ -1,10 +1,20 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import HabitIcon from "@/components/HabitIcon";
 import ThemeToggle from "@/components/ThemeToggle";
-import { dateKey, routineLabel, type HabitData } from "@/lib/habits";
-import { noopSubscribe, parseHabits, readHabitsRaw, readRaw, subscribe } from "@/lib/store";
+import { routineLabel, type HabitData } from "@/lib/habits";
+import {
+  getServerToday,
+  getToday,
+  parseHabits,
+  readHabitsRaw,
+  readRaw,
+  subscribe,
+  subscribeToday,
+} from "@/lib/store";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
@@ -12,7 +22,8 @@ export default function Sidebar() {
   // Server snapshot is empty, so the first client render matches the server HTML.
   const habitsRaw = useSyncExternalStore(subscribe, readHabitsRaw, () => null);
   const dataRaw = useSyncExternalStore(subscribe, readRaw, () => "");
-  const today = useSyncExternalStore(noopSubscribe, () => dateKey(new Date()), () => "");
+  const today = useSyncExternalStore(subscribeToday, getToday, getServerToday);
+  const pathname = usePathname();
 
   const habits = useMemo(() => (habitsRaw === null ? [] : parseHabits(habitsRaw)), [habitsRaw]);
   const data = useMemo<HabitData>(() => {
@@ -53,9 +64,9 @@ export default function Sidebar() {
             const done = count >= h.goal;
             const scheduled = h.days.includes(weekday);
             return (
-              <a
+              <Link
                 key={h.id}
-                href={`#habit-${h.id}`}
+                href={`/#habit-${h.id}`}
                 onClick={() => setOpen(false)}
                 className="flex min-h-11 items-center gap-3 rounded-lg px-2 py-1.5 active:bg-zinc-100 md:hover:bg-zinc-50"
               >
@@ -71,11 +82,29 @@ export default function Sidebar() {
                     {!scheduled ? "Off today" : h.goal > 1 ? `${count}/${h.goal} ${h.unit}` : done ? "Done" : routineLabel(h.days)}
                   </span>
                 </span>
-              </a>
+              </Link>
             );
           })}
           {today && habits.length === 0 && <p className="px-2 text-sm text-zinc-500">No habits yet.</p>}
         </nav>
+
+        <div className="border-t border-zinc-200 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <Link
+            href="/settings"
+            onClick={() => setOpen(false)}
+            aria-current={pathname === "/settings" ? "page" : undefined}
+            className={`flex min-h-11 items-center gap-3 rounded-lg px-2 py-1.5 text-sm font-medium active:bg-zinc-100 md:hover:bg-zinc-50 ${
+              pathname === "/settings" ? "bg-zinc-100 text-zinc-900" : "text-zinc-600"
+            }`}
+          >
+            <span className="grid size-8 shrink-0 place-items-center rounded-md" style={{ backgroundColor: "var(--chip)" }}>
+              <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M12 15a3 3 0 100-6 3 3 0 000 6zM19 12a7 7 0 00-.1-1l2-1.5-2-3.5-2.3 1a7 7 0 00-1.7-1L14.5 3h-4l-.4 2.5a7 7 0 00-1.7 1l-2.3-1-2 3.5 2 1.5a7 7 0 000 2l-2 1.5 2 3.5 2.3-1a7 7 0 001.7 1l.4 2.5h4l.4-2.5a7 7 0 001.7-1l2.3 1 2-3.5-2-1.5c.1-.3.1-.7.1-1z" />
+              </svg>
+            </span>
+            Settings
+          </Link>
+        </div>
       </aside>
     </>
   );

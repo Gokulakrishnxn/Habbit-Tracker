@@ -3,11 +3,20 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import HabitHeatmap from "@/components/HabitHeatmap";
 import HabitForm from "@/components/HabitForm";
-import { noopSubscribe, parseHabits, readHabitsRaw, readRaw, save, subscribe } from "@/lib/store";
 import {
-  HABITS_KEY,
+  getServerToday,
+  getToday,
+  parseHabits,
+  readHabitsRaw,
+  readRaw,
+  removeHabit,
+  save,
+  subscribe,
+  subscribeToday,
+  upsertHabit,
+} from "@/lib/store";
+import {
   STORAGE_KEY,
-  dateKey,
   type Habit,
   type HabitData,
 } from "@/lib/habits";
@@ -23,7 +32,7 @@ export default function HabitTracker() {
   const habitsRaw = useSyncExternalStore(subscribe, readHabitsRaw, () => "");
   const habits = useMemo(() => parseHabits(habitsRaw), [habitsRaw]);
   const [editing, setEditing] = useState<Habit | "new" | null>(null);
-  const today = useSyncExternalStore(noopSubscribe, () => dateKey(new Date()), () => "");
+  const today = useSyncExternalStore(subscribeToday, getToday, getServerToday);
   const [picked, setPicked] = useState<{ y: number; m: number } | null>(null);
   // Until the user navigates, show the current month (derived from the client-only `today`).
   const view = picked ?? { y: Number(today.slice(0, 4)), m: Number(today.slice(5, 7)) - 1 };
@@ -49,18 +58,12 @@ export default function HabitTracker() {
   };
 
   const saveHabit = (h: Habit) => {
-    const list = parseHabits(readHabitsRaw());
-    save(HABITS_KEY, list.some((x) => x.id === h.id) ? list.map((x) => (x.id === h.id ? h : x)) : [...list, h]);
+    upsertHabit(h);
     setEditing(null);
   };
 
   const deleteHabit = (id: string) => {
-    save(HABITS_KEY, parseHabits(readHabitsRaw()).filter((x) => x.id !== id));
-    try {
-      const latest: HabitData = JSON.parse(readRaw() || "{}");
-      delete latest[id];
-      save(STORAGE_KEY, latest);
-    } catch {}
+    removeHabit(id);
     setEditing(null);
   };
 
