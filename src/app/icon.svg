@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Habit Tracker</title>
+  <defs>
+    <linearGradient id="ink" x1="0.2" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#3a3a3f" />
+      <stop offset="1" stop-color="#121214" />
+    </linearGradient>
+    <radialGradient id="pink" cx="0.32" cy="0.62" r="0.38">
+      <stop offset="0" stop-color="#f9a8c4" stop-opacity="0.85" />
+      <stop offset="1" stop-color="#f9a8c4" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="mint" cx="0.62" cy="0.78" r="0.34">
+      <stop offset="0" stop-color="#6ee7b7" stop-opacity="0.9" />
+      <stop offset="1" stop-color="#6ee7b7" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="sky" cx="0.82" cy="0.72" r="0.32">
+      <stop offset="0" stop-color="#7dd3fc" stop-opacity="0.9" />
+      <stop offset="1" stop-color="#7dd3fc" stop-opacity="0" />
+    </radialGradient>
+    <clipPath id="body">
+      <path id="blob" d="M300 118C378 118 424 178 424 248C424 328 362 388 286 388C258 388 240 376 222 366C202 355 196 338 176 332C158 327 152 310 162 297C172 284 188 282 190 266C192 250 178 240 192 218C208 192 248 118 300 118Z" />
+    </clipPath>
+  </defs>
+
+  <style>
+    .tile { fill: #ffffff; }
+    .shadow { fill: #9ca3af; }
+    .light-only { display: inline; }
+    .dark-only { display: none; }
+    .eye { fill: #ffffff; }
+    .dot { fill: #9ca3af; }
+    @media (prefers-color-scheme: dark) {
+      .tile { fill: #000000; }
+      .shadow { fill: #6b7280; }
+      .light-only { display: none; }
+      .dark-only { display: inline; }
+      .eye { fill: #0b0b0c; }
+      .dot { fill: #6b7280; }
+    }
+  </style>
+
+  <!-- app tile -->
+  <rect class="tile" width="512" height="512" rx="112" />
+
+  <!-- soft depth layer behind the blob -->
+  <use href="#blob" class="shadow" transform="translate(-9 12)" />
+
+  <!-- blob: ink (light theme) / pearl glow (dark theme) -->
+  <g clip-path="url(#body)">
+    <rect class="light-only" x="140" y="100" width="300" height="300" fill="url(#ink)" />
+    <g class="dark-only">
+      <rect x="140" y="100" width="300" height="300" fill="#f6f6f8" />
+      <rect x="140" y="100" width="300" height="300" fill="url(#pink)" />
+      <rect x="140" y="100" width="300" height="300" fill="url(#mint)" />
+      <rect x="140" y="100" width="300" height="300" fill="url(#sky)" />
+    </g>
+  </g>
+
+  <!-- eyes -->
+  <ellipse class="eye" cx="332" cy="246" rx="13" ry="20" />
+  <ellipse class="eye" cx="382" cy="246" rx="13" ry="20" />
+
+  <!-- trailing droplets -->
+  <circle class="dot" cx="134" cy="262" r="7" />
+  <circle class="dot" cx="166" cy="352" r="10" />
+</svg>
