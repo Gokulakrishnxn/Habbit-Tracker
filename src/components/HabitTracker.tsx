@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import HabitHeatmap from "@/components/HabitHeatmap";
 import HabitForm from "@/components/HabitForm";
 import {
@@ -21,12 +21,50 @@ import {
   type HabitData,
 } from "@/lib/habits";
 
+/** "Nov – Dec 2026", or "Nov 2026 – Apr 2027" when the range crosses a year. */
+function rangeLabel(v: { y: number; m: number }, count: number) {
+  const a = new Date(v.y, v.m, 1);
+  const b = new Date(v.y, v.m + count - 1, 1);
+  const short = (d: Date) => d.toLocaleDateString(undefined, { month: "short" });
+  return a.getFullYear() === b.getFullYear()
+    ? `${short(a)} – ${short(b)} ${b.getFullYear()}`
+    : `${short(a)} ${a.getFullYear()} – ${short(b)} ${b.getFullYear()}`;
+}
+
 function shift(v: { y: number; m: number }, delta: number) {
   const d = new Date(v.y, v.m + delta, 1);
   return { y: d.getFullYear(), m: d.getMonth() };
 }
 
+/** Fits as many months as the card can hold; a phone keeps 2, a wide desktop shows more. */
+function monthsThatFit(width: number) {
+  if (!width) return 2;
+  const cell = typeof window !== "undefined" && matchMedia("(pointer: coarse)").matches ? 28 : 24;
+  const monthWidth = 6 * (cell + 3) - 3; // widest month spans 6 week-columns
+  const gap = 12;
+  const inner = width - 32 /* card padding */ - 44; /* weekday labels */
+  return Math.min(12, Math.max(2, Math.floor((inner + gap) / (monthWidth + gap))));
+}
+
+/** Tracks the width of the page content so the heatmaps can adapt to any device. */
 export default function HabitTracker() {
+  const ref = useRef<HTMLDivElement>(null);
+  const subscribeWidth = useCallback((cb: () => void) => {
+    const el = ref.current;
+    if (!el) return () => {};
+    const ro = new ResizeObserver(cb);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const width = useSyncExternalStore(subscribeWidth, () => ref.current?.clientWidth ?? 0, () => 0);
+  return (
+    <div ref={ref} className="mx-auto w-full max-w-[1600px]">
+      <TrackerBody width={width} />
+    </div>
+  );
+}
+
+function TrackerBody({ width }: { width: number }) {
   // null on the server, so the first client render matches the server HTML.
   const raw = useSyncExternalStore(subscribe, readRaw, () => null);
   const habitsRaw = useSyncExternalStore(subscribe, readHabitsRaw, () => "");
@@ -69,6 +107,7 @@ export default function HabitTracker() {
 
   if (raw === null || !today) return <div className="h-96" />;
 
+  const months = monthsThatFit(width);
   const monthsAhead = (view.y - Number(today.slice(0, 4))) * 12 + view.m - (Number(today.slice(5, 7)) - 1);
 
   const weekday = new Date(today + "T00:00").getDay();
@@ -76,7 +115,7 @@ export default function HabitTracker() {
   const doneToday = todays.filter((h) => (data[h.id]?.[today] ?? 0) >= h.goal).length;
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-6">
+    <div className="w-full space-y-6">
       {/* Today */}
       <section>
         <div className="mb-3 flex items-end justify-between gap-3">
@@ -110,7 +149,7 @@ export default function HabitTracker() {
           <h2 className="text-lg font-semibold text-zinc-900">Activity</h2>
           <div className="flex items-center gap-1 rounded-lg bg-zinc-100 p-1">
             <button
-              onClick={() => setPicked(shift(view, -1))}
+              onClick={() => setPicked(shift(view, -Math.max(1, months - 1)))}
               disabled={monthsAhead <= -24}
               aria-label="Previous month"
               className="grid size-10 place-items-center rounded-md text-lg text-zinc-700 active:bg-surface disabled:opacity-30"
@@ -118,11 +157,10 @@ export default function HabitTracker() {
               ‹
             </button>
             <span className="min-w-32 text-center text-sm font-medium text-zinc-900">
-              {new Date(view.y, view.m, 1).toLocaleDateString(undefined, { month: "short" })} –{" "}
-              {new Date(view.y, view.m + 1, 1).toLocaleDateString(undefined, { month: "short", year: "numeric" })}
+              {rangeLabel(view, months)}
             </span>
             <button
-              onClick={() => setPicked(shift(view, 1))}
+              onClick={() => setPicked(shift(view, Math.max(1, months - 1)))}
               disabled={monthsAhead >= 12}
               aria-label="Next month"
               className="grid size-10 place-items-center rounded-md text-lg text-zinc-700 active:bg-surface disabled:opacity-30"
@@ -140,6 +178,7 @@ export default function HabitTracker() {
               days={data[h.id]}
               year={view.y}
               month={view.m}
+              monthCount={months}
               onChange={(key, count) => set(h.id, key, count)}
               onEdit={() => setEditing(h)}
             />

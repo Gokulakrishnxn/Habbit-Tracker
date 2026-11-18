@@ -34,6 +34,7 @@ export default function HabitHeatmap({
   days,
   year,
   month,
+  monthCount,
   onChange,
   onEdit,
 }: {
@@ -41,19 +42,22 @@ export default function HabitHeatmap({
   days: Record<string, number> | undefined;
   year: number;
   month: number;
+  /** How many consecutive months to show, starting at `month`. */
+  monthCount: number;
   onChange: (key: string, count: number) => void;
   onEdit: () => void;
 }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [calendarOpen, setCalendarOpen] = useState(false);
-  // Two months side by side, looking forward: the chosen month, then the next one.
-  const groups = useMemo(() => {
-    const next = new Date(year, month + 1, 1);
-    return [
-      { y: year, m: month },
-      { y: next.getFullYear(), m: next.getMonth() },
-    ].map(({ y, m }) => ({ y, m, weeks: buildWeeks(y, m) }));
-  }, [year, month]);
+  // As many consecutive months as fit, side by side, starting at the chosen month.
+  const groups = useMemo(
+    () =>
+      Array.from({ length: monthCount }, (_, i) => {
+        const d = new Date(year, month + i, 1);
+        return { y: d.getFullYear(), m: d.getMonth(), weeks: buildWeeks(d.getFullYear(), d.getMonth()) };
+      }),
+    [year, month, monthCount],
+  );
 
   const todayKey = dateKey(new Date());
   const doneToday = (days?.[todayKey] ?? 0) >= habit.goal;
