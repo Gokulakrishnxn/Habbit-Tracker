@@ -67,7 +67,6 @@ export default function HabitTracker() {
   if (raw === null || !today) return <div className="h-96" />;
 
   const monthsAhead = (view.y - Number(today.slice(0, 4))) * 12 + view.m - (Number(today.slice(5, 7)) - 1);
-  const isCurrentMonth = monthsAhead <= 0;
 
   const weekday = new Date(today + "T00:00").getDay();
   const todays = habits.filter((h) => h.days.includes(weekday));
@@ -109,7 +108,7 @@ export default function HabitTracker() {
           <div className="flex items-center gap-1 rounded-lg bg-zinc-100 p-1">
             <button
               onClick={() => setPicked(shift(view, -1))}
-              disabled={isCurrentMonth}
+              disabled={monthsAhead <= -24}
               aria-label="Previous month"
               className="grid size-10 place-items-center rounded-md text-lg text-zinc-700 active:bg-surface disabled:opacity-30"
             >

@@ -9,10 +9,8 @@ const MIX = ["0", "30", "55", "80", "100"]; // % of the habit colour per level
 
 type Cell = { date: Date; key: string };
 
-/** Columns are weeks (Sun–Sat); only days inside the chosen month, from today onwards, get a square. */
+/** Columns are weeks (Sun–Sat); every day of the chosen month gets a square (future days are shown but disabled). */
 function buildWeeks(year: number, month: number): Cell[][] {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
   const first = new Date(year, month, 1);
   const last = new Date(year, month + 1, 0);
   const start = new Date(year, month, 1 - first.getDay());
@@ -23,7 +21,7 @@ function buildWeeks(year: number, month: number): Cell[][] {
     for (let i = 0; i < 7; i++) {
       const date = new Date(d);
       date.setDate(d.getDate() + i);
-      if (date.getMonth() !== month || date < today) continue;
+      if (date.getMonth() !== month) continue;
       week.push({ date, key: dateKey(date) });
     }
     if (week.length) weeks.push(week);
@@ -161,7 +159,7 @@ export default function HabitHeatmap({
 
       <div className="mt-2 flex min-h-8 flex-wrap items-center justify-between gap-x-4 gap-y-1">
         <p className="text-xs text-zinc-600">
-          {selected ? label(selected, selectedCount) : "Tap today's square to log it. Use Calendar for earlier days."}
+          {selected ? label(selected, selectedCount) : "Tap a square to log that day"}
         </p>
       </div>
       {calendarOpen && (
