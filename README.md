@@ -16,9 +16,16 @@ My personal habit tracker, built for myself and now free for everyone.
 
 <br />
 
-<img src="docs/screenshot-light.jpg" alt="Habit Tracker in light mode" width="300" />
-&nbsp;&nbsp;&nbsp;
-<img src="docs/screenshot-dark.jpg" alt="Habit Tracker in dark mode" width="300" />
+<img src="docs/screenshot-light.jpg" alt="Habit Tracker heatmaps in light mode" width="250" />
+&nbsp;&nbsp;
+<img src="docs/screenshot-dark.jpg" alt="Habit Tracker heatmaps in dark mode" width="250" />
+&nbsp;&nbsp;
+<img src="docs/screenshot-times-of-day.jpg" alt="Ticking off morning, evening and night for skin care" width="250" />
+
+<br />
+<br />
+
+<img src="docs/screenshot-desktop.jpg" alt="Habit Tracker on desktop, with the sidebar and several months of heatmap" width="780" />
 
 </div>
 
