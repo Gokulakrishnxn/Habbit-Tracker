@@ -18,6 +18,15 @@ export const metadata: Metadata = {
   title: "Habit Tracker",
   description: "Track daily habits with GitHub-style heatmaps",
   applicationName: "Habit Tracker",
+  // A PNG tab icon too, for browsers that don't use SVG favicons (older Safari).
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/pwa-icon/192", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
+  },
+  openGraph: { title: "Habit Tracker", description: "Every habit. One place.", type: "website" },
   // Lets "Add to Home Screen" on iPhone open the app full-screen, like a native app.
   appleWebApp: { capable: true, title: "Habits", statusBarStyle: "default" },
 };
@@ -38,6 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
