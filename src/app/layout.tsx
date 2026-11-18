@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Habit Tracker",
   description: "Track daily habits with GitHub-style heatmaps",
+  applicationName: "Habit Tracker",
+  // Lets "Add to Home Screen" on iPhone open the app full-screen, like a native app.
+  appleWebApp: { capable: true, title: "Habits", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {
