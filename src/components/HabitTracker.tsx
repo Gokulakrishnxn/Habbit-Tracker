@@ -17,6 +17,7 @@ import {
 } from "@/lib/store";
 import {
   STORAGE_KEY,
+  isDone,
   type Habit,
   type HabitData,
 } from "@/lib/habits";
@@ -39,10 +40,10 @@ function shift(v: { y: number; m: number }, delta: number) {
 /** Fits as many months as the card can hold; a phone keeps 2, a wide desktop shows more. */
 function monthsThatFit(width: number) {
   if (!width) return 2;
-  const cell = typeof window !== "undefined" && matchMedia("(pointer: coarse)").matches ? 28 : 24;
+  const cell = 24;
   const monthWidth = 6 * (cell + 3) - 3; // widest month spans 6 week-columns
   const gap = 12;
-  const inner = width - 32 /* card padding */ - 44; /* weekday labels */
+  const inner = width - 44; /* weekday labels */
   return Math.min(12, Math.max(2, Math.floor((inner + gap) / (monthWidth + gap))));
 }
 
@@ -112,7 +113,7 @@ function TrackerBody({ width }: { width: number }) {
 
   const weekday = new Date(today + "T00:00").getDay();
   const todays = habits.filter((h) => h.days.includes(weekday));
-  const doneToday = todays.filter((h) => (data[h.id]?.[today] ?? 0) >= h.goal).length;
+  const doneToday = todays.filter((h) => isDone(h, data[h.id]?.[today])).length;
 
   return (
     <div className="w-full space-y-6">

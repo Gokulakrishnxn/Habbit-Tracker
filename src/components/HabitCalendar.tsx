@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import HabitIcon from "@/components/HabitIcon";
-import { dateKey, levelOf, nextCount, type Habit } from "@/lib/habits";
+import SlotPicker from "@/components/SlotPicker";
+import { SLOTS, dateKey, goalOf, isDone, levelOf, nextCount, progress, type Habit } from "@/lib/habits";
 
 const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
 
@@ -56,11 +57,14 @@ export default function HabitCalendar({
   for (let d = 1; d <= daysInMonth; d++) {
     const date = new Date(view.y, view.m, d);
     const key = dateKey(date);
-    if ((days?.[key] ?? 0) >= habit.goal) completed.push(d);
+    if (isDone(habit, days?.[key])) completed.push(d);
     else if (startKey && key >= startKey && key < todayKey && habit.days.includes(date.getDay())) missed.push(d);
   }
   const missedSet = new Set(missed);
   const [tab, setTab] = useState<"completed" | "missed">("completed");
+  const [pickerKey, setPickerKey] = useState<string | null>(null); // date whose times of day are being edited
+  const slotted = !!habit.slots?.length;
+  const goal = goalOf(habit);
   const listed = tab === "completed" ? completed : missed;
 
   const go = (delta: number) =>
@@ -127,15 +131,16 @@ export default function HabitCalendar({
             const date = new Date(view.y, view.m, day);
             const key = dateKey(date);
             const future = key > todayKey;
-            const count = days?.[key] ?? 0;
-            const level = levelOf(count, habit.goal);
+            const raw = days?.[key] ?? 0;
+            const p = progress(habit, raw);
+            const level = levelOf(p, goal);
             const mix = ["0", "30", "55", "80", "100"][level];
             return (
               <button
                 key={i}
                 disabled={future}
-                onClick={() => onChange(key, nextCount(count, habit.goal))}
-                aria-label={`${date.toDateString()}: ${habit.goal > 1 ? `${count}/${habit.goal}` : count ? "done" : "not done"}`}
+                onClick={() => (slotted ? setPickerKey(key) : onChange(key, nextCount(raw, goal)))}
+                aria-label={`${date.toDateString()}: ${goal > 1 ? `${p}/${goal}` : p ? "done" : "not done"}`}
                 style={{
                   backgroundColor: level === 0 ? "var(--chip)" : `color-mix(in srgb, ${habit.color} ${mix}%, var(--chip))`,
                   color: level <= 1 ? "var(--color-zinc-900)" : "#fff",
@@ -146,7 +151,14 @@ export default function HabitCalendar({
               >
                 <span className={level > 0 ? "text-[11px] leading-none opacity-80" : ""}>{day}</span>
                 {level === 0 && missedSet.has(day) && <span className="absolute bottom-1.5 size-1 rounded-full bg-red-500" aria-hidden />}
-                {level > 0 && <HabitIcon name={habit.icon} className="mt-0.5 size-3" />}
+                {level > 0 && !slotted && <HabitIcon name={habit.icon} className="mt-0.5 size-3" />}
+                {slotted && (
+                  <span className="mt-1 flex gap-[2px]" aria-hidden>
+                    {habit.slots!.map((s) => (
+                      <span key={s} className="size-[4px] rounded-full bg-current" style={{ opacity: raw & SLOTS[s].bit ? 1 : 0.28 }} />
+                    ))}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -195,8 +207,18 @@ export default function HabitCalendar({
           </div>
         </div>
 
-        {habit.goal > 1 && <p className="mt-3 text-center text-xs text-zinc-500">Tap a day to add one {habit.unit?.replace(/s$/, "")}; goal is {habit.goal}.</p>}
+        {slotted && <p className="mt-3 text-center text-xs text-zinc-500">Tap a day to tick off its times of day. Forgot to log? Fill in any past day.</p>}
+        {!slotted && goal > 1 && <p className="mt-3 text-center text-xs text-zinc-500">Tap a day to add one {habit.unit?.replace(/s$/, "")}; goal is {habit.goal}.</p>}
       </div>
+      {pickerKey && (
+        <SlotPicker
+          habit={habit}
+          date={pickerKey}
+          raw={days?.[pickerKey] ?? 0}
+          onChange={(v) => onChange(pickerKey, v)}
+          onClose={() => setPickerKey(null)}
+        />
+      )}
     </div>
   );
 }

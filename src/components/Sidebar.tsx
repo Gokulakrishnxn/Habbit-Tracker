@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import HabitIcon from "@/components/HabitIcon";
 import ThemeToggle from "@/components/ThemeToggle";
-import { routineLabel, type HabitData } from "@/lib/habits";
+import { goalOf, isDone, progress, routineLabel, type HabitData } from "@/lib/habits";
 import {
   getServerToday,
   getToday,
@@ -60,8 +60,9 @@ export default function Sidebar() {
 
         <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 pb-4">
           {habits.map((h) => {
-            const count = data[h.id]?.[today] ?? 0;
-            const done = count >= h.goal;
+            const raw = data[h.id]?.[today] ?? 0;
+            const count = progress(h, raw);
+            const done = isDone(h, raw);
             const scheduled = h.days.includes(weekday);
             return (
               <Link
@@ -79,7 +80,15 @@ export default function Sidebar() {
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-medium text-zinc-900">{h.name}</span>
                   <span className="block truncate text-xs text-zinc-500">
-                    {!scheduled ? "Off today" : h.goal > 1 ? `${count}/${h.goal} ${h.unit}` : done ? "Done" : routineLabel(h.days)}
+                    {!scheduled
+                      ? "Off today"
+                      : h.slots?.length
+                        ? `${count}/${goalOf(h)} today`
+                        : h.goal > 1
+                          ? `${count}/${h.goal} ${h.unit}`
+                          : done
+                            ? "Done"
+                            : routineLabel(h.days)}
                   </span>
                 </span>
               </Link>

@@ -68,6 +68,19 @@ export const PALETTE = [
 
 export const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
 
+/**
+ * Times of day a habit can be split into (for example skin care: morning, evening, night).
+ * Each slot owns a fixed bit, so a day's logged value is a bitmask and stays valid if the slots change.
+ */
+export const SLOT_IDS = ["morning", "afternoon", "evening", "night"] as const;
+export type SlotId = (typeof SLOT_IDS)[number];
+export const SLOTS: Record<SlotId, { label: string; bit: number }> = {
+  morning: { label: "Morning", bit: 1 },
+  afternoon: { label: "Afternoon", bit: 2 },
+  evening: { label: "Evening", bit: 4 },
+  night: { label: "Night", bit: 8 },
+};
+
 export type Habit = {
   id: string;
   name: string;
@@ -78,6 +91,8 @@ export type Habit = {
   unit?: string;
   /** Routine: weekdays (0 = Sunday) this habit is scheduled on. */
   days: number[];
+  /** Optional times of day. When set, each day logs which slots were done and the habit is complete when all are. */
+  slots?: SlotId[];
   /** YYYY-MM-DD the habit was created (used so days before it are not counted as missed). */
   createdAt?: string;
 };
@@ -103,6 +118,27 @@ export function dateKey(d: Date) {
   return `${d.getFullYear()}-${m}-${day}`;
 }
 
+/** Target for a day: one per time-of-day slot, otherwise the habit's goal. */
+export const goalOf = (h: Habit) => (h.slots?.length ? h.slots.length : h.goal);
+
+export const slotMask = (h: Habit) => (h.slots ?? []).reduce((mask, s) => mask | SLOTS[s].bit, 0);
+
+const popcount = (n: number) => {
+  let c = 0;
+  for (; n; n >>= 1) c += n & 1;
+  return c;
+};
+
+/** How much of the day's goal is done, from the raw stored value. */
+export function progress(h: Habit, raw = 0) {
+  return h.slots?.length ? popcount(raw & slotMask(h)) : raw;
+}
+
+export const isDone = (h: Habit, raw = 0) => progress(h, raw) >= goalOf(h);
+
+/** Which time-of-day slots are done in a raw stored value. */
+export const slotsDone = (h: Habit, raw = 0): SlotId[] => (h.slots ?? []).filter((s) => raw & SLOTS[s].bit);
+
 export function levelOf(count: number, goal: number): 0 | 1 | 2 | 3 | 4 {
   if (count <= 0) return 0;
   return Math.min(4, Math.max(1, Math.ceil((count / goal) * 4))) as 1 | 2 | 3 | 4;
@@ -115,17 +151,18 @@ export function nextCount(count: number, goal: number) {
 }
 
 /** Consecutive scheduled days completed; days outside the routine neither break nor extend a streak. */
-export function currentStreak(days: Record<string, number> = {}, goal: number, schedule: number[] = ALL_DAYS) {
+export function currentStreak(habit: Habit, days: Record<string, number> = {}) {
+  const schedule = habit.days;
   if (schedule.length === 0) return 0;
   const d = new Date();
   d.setHours(0, 0, 0, 0);
-  const isDone = () => (days[dateKey(d)] ?? 0) >= goal;
+  const done = () => isDone(habit, days[dateKey(d)] ?? 0);
   // today may still be in progress, so an unfinished today doesn't break the streak
-  if (schedule.includes(d.getDay()) && !isDone()) d.setDate(d.getDate() - 1);
+  if (schedule.includes(d.getDay()) && !done()) d.setDate(d.getDate() - 1);
   let streak = 0;
   for (let guard = 0; guard < 4000; guard++) {
     if (schedule.includes(d.getDay())) {
-      if (!isDone()) break;
+      if (!done()) break;
       streak++;
     }
     d.setDate(d.getDate() - 1);

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import HabitForm from "@/components/HabitForm";
 import HabitIcon from "@/components/HabitIcon";
-import { routineLabel, type Habit, type HabitData } from "@/lib/habits";
+import { SLOTS, routineLabel, type Habit, type HabitData } from "@/lib/habits";
 import { parseHabits, readHabitsRaw, readRaw, removeHabit, subscribe, upsertHabit } from "@/lib/store";
 
 export default function SettingsHabits() {
@@ -72,7 +72,12 @@ export default function SettingsHabits() {
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-medium text-zinc-900">{h.name}</p>
                     <p className="text-xs text-zinc-500">
-                      {routineLabel(h.days)} · {h.goal > 1 ? `${h.goal} ${h.unit}/day` : "Done / not done"}
+                      {routineLabel(h.days)} ·{" "}
+                      {h.slots?.length
+                        ? h.slots.map((x) => SLOTS[x].label).join(" · ")
+                        : h.goal > 1
+                          ? `${h.goal} ${h.unit}/day`
+                          : "Done / not done"}
                     </p>
                     <p className="text-xs text-zinc-400">
                       {logged} {logged === 1 ? "day" : "days"} logged

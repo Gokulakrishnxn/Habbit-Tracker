@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import HabitIcon from "@/components/HabitIcon";
-import { ALL_DAYS, ICON_NAMES, PALETTE, dateKey, routineLabel, type Habit } from "@/lib/habits";
+import { ALL_DAYS, ICON_NAMES, PALETTE, SLOTS, SLOT_IDS, dateKey, routineLabel, type Habit, type SlotId } from "@/lib/habits";
 
 const DAY_LETTERS = ["S", "M", "T", "W", "T", "F", "S"];
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -26,8 +26,12 @@ export default function HabitForm({
   const [name, setName] = useState(initial?.name ?? "");
   const [icon, setIcon] = useState(initial?.icon ?? ICON_NAMES[0]);
   const [color, setColor] = useState(initial?.color ?? PALETTE[0]);
-  const [counted, setCounted] = useState((initial?.goal ?? 1) > 1);
-  const [goal, setGoal] = useState(String(initial && initial.goal > 1 ? initial.goal : 8));
+  const [mode, setMode] = useState<"simple" | "count" | "slots">(
+    initial?.slots?.length ? "slots" : (initial?.goal ?? 1) > 1 ? "count" : "simple",
+  );
+  const counted = mode === "count";
+  const [slots, setSlots] = useState<SlotId[]>(initial?.slots?.length ? initial.slots : ["morning", "evening"]);
+  const [goal, setGoal] = useState(String(initial && !initial.slots?.length && initial.goal > 1 ? initial.goal : 8));
   const [unit, setUnit] = useState(initial?.unit ?? "times");
   const [days, setDays] = useState<number[]>(initial?.days ?? ALL_DAYS);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -44,8 +48,9 @@ export default function HabitForm({
   }, [onClose]);
 
   const goalNum = Math.min(99, Math.max(2, Math.floor(Number(goal)) || 2));
-  const valid = name.trim().length > 0 && days.length > 0;
+  const valid = name.trim().length > 0 && days.length > 0 && (mode !== "slots" || slots.length > 0);
 
+  const toggleSlot = (s: SlotId) => setSlots((cur) => (cur.includes(s) ? cur.filter((x) => x !== s) : [...cur, s]));
   const toggleDay = (d: number) => setDays((cur) => (cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d].sort()));
 
   const submit = (e: React.FormEvent) => {
@@ -56,8 +61,9 @@ export default function HabitForm({
       name: name.trim(),
       icon,
       color,
-      goal: counted ? goalNum : 1,
+      goal: mode === "slots" ? slots.length : counted ? goalNum : 1,
       unit: counted ? unit.trim() || "times" : undefined,
+      slots: mode === "slots" ? SLOT_IDS.filter((s) => slots.includes(s)) : undefined,
       days,
       createdAt: initial?.createdAt ?? dateKey(new Date()),
     });
@@ -137,15 +143,18 @@ export default function HabitForm({
 
         <span className={label}>Track as</span>
         <div className="mb-3 flex rounded-lg bg-zinc-100 p-1">
-          {[
-            { v: false, t: "Done / not done" },
-            { v: true, t: "Count" },
-          ].map((o) => (
+          {(
+            [
+              { v: "simple", t: "Done / not" },
+              { v: "count", t: "Count" },
+              { v: "slots", t: "Times of day" },
+            ] as const
+          ).map((o) => (
             <button
               key={o.t}
               type="button"
-              onClick={() => setCounted(o.v)}
-              className={`min-h-10 flex-1 rounded-md text-sm font-medium ${counted === o.v ? "bg-surface text-zinc-900 shadow-sm" : "text-zinc-500"}`}
+              onClick={() => setMode(o.v)}
+              className={`min-h-10 flex-1 rounded-md px-1 text-sm font-medium ${mode === o.v ? "bg-surface text-zinc-900 shadow-sm" : "text-zinc-500"}`}
             >
               {o.t}
             </button>
@@ -174,7 +183,31 @@ export default function HabitForm({
             </label>
           </div>
         )}
-        {!counted && <div className="mb-5" />}
+        {mode === "slots" && (
+          <div className="mb-5">
+            <div className="grid grid-cols-2 gap-2">
+              {SLOT_IDS.map((s) => {
+                const on = slots.includes(s);
+                return (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => toggleSlot(s)}
+                    aria-pressed={on}
+                    className="min-h-11 rounded-xl border text-sm font-medium"
+                    style={on ? { backgroundColor: color, borderColor: color, color: "#fff" } : { borderColor: "var(--line)", color: "var(--color-zinc-600)" }}
+                  >
+                    {SLOTS[s].label}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-2 text-xs text-zinc-500">
+              {slots.length ? "A day counts as complete when every time of day is done." : "Pick at least one time of day."}
+            </p>
+          </div>
+        )}
+        {mode === "simple" && <div className="mb-5" />}
 
         <span className={label}>Routine · {days.length ? routineLabel(days) : "pick at least one day"}</span>
         <div className="mb-2 flex flex-wrap gap-2">
