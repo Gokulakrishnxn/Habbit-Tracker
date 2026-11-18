@@ -75,7 +75,7 @@ export default function HabitForm({
       <form
         onSubmit={submit}
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-white p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-xl sm:rounded-2xl"
+        className="max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-surface p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-xl sm:rounded-2xl"
       >
         <div className="mb-4 flex items-center gap-3">
           <span className="grid size-10 place-items-center rounded-xl text-white" style={{ backgroundColor: color }}>
@@ -95,7 +95,7 @@ export default function HabitForm({
           onChange={(e) => setName(e.target.value)}
           maxLength={40}
           placeholder="e.g. Meditate"
-          className="mb-5 h-12 w-full rounded-xl border border-zinc-200 px-3 text-base text-zinc-900 outline-none focus:border-zinc-900"
+          className="mb-5 h-12 w-full rounded-xl border border-zinc-200 bg-transparent px-3 text-base text-zinc-900 outline-none focus:border-zinc-900"
         />
 
         <span className={label}>Colour</span>
@@ -126,7 +126,7 @@ export default function HabitForm({
               style={
                 icon === n
                   ? { backgroundColor: color, borderColor: color, color: "#fff" }
-                  : { borderColor: "#e4e4e7", color: "#52525b" }
+                  : { borderColor: "var(--line)", color: "var(--color-zinc-600)" }
               }
             >
               <HabitIcon name={n} className="size-5" />
@@ -144,7 +144,7 @@ export default function HabitForm({
               key={o.t}
               type="button"
               onClick={() => setCounted(o.v)}
-              className={`min-h-10 flex-1 rounded-md text-sm font-medium ${counted === o.v ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-500"}`}
+              className={`min-h-10 flex-1 rounded-md text-sm font-medium ${counted === o.v ? "bg-surface text-zinc-900 shadow-sm" : "text-zinc-500"}`}
             >
               {o.t}
             </button>
@@ -158,7 +158,7 @@ export default function HabitForm({
                 inputMode="numeric"
                 value={goal}
                 onChange={(e) => setGoal(e.target.value.replace(/\D/g, "").slice(0, 2))}
-                className="mt-1 h-12 w-full rounded-xl border border-zinc-200 px-3 text-base text-zinc-900 outline-none focus:border-zinc-900"
+                className="mt-1 h-12 w-full rounded-xl border border-zinc-200 bg-transparent px-3 text-base text-zinc-900 outline-none focus:border-zinc-900"
               />
             </label>
             <label className="flex-[2] text-xs text-zinc-500">
@@ -168,7 +168,7 @@ export default function HabitForm({
                 onChange={(e) => setUnit(e.target.value)}
                 maxLength={16}
                 placeholder="glasses, pages, minutes…"
-                className="mt-1 h-12 w-full rounded-xl border border-zinc-200 px-3 text-base text-zinc-900 outline-none focus:border-zinc-900"
+                className="mt-1 h-12 w-full rounded-xl border border-zinc-200 bg-transparent px-3 text-base text-zinc-900 outline-none focus:border-zinc-900"
               />
             </label>
           </div>
@@ -199,7 +199,7 @@ export default function HabitForm({
                 aria-label={DAY_NAMES[i]}
                 aria-pressed={on}
                 className="grid h-11 place-items-center rounded-xl border text-sm font-medium"
-                style={on ? { backgroundColor: color, borderColor: color, color: "#fff" } : { borderColor: "#e4e4e7", color: "#52525b" }}
+                style={on ? { backgroundColor: color, borderColor: color, color: "#fff" } : { borderColor: "var(--line)", color: "var(--color-zinc-600)" }}
               >
                 {l}
               </button>

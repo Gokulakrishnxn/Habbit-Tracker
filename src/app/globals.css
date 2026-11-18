@@ -1,13 +1,44 @@
 @import "tailwindcss";
 
+/* Dark mode is driven by a `dark` class on <html> (set by the toggle / pre-paint script). */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --surface: #ffffff; /* cards, sheets, bars */
+  --empty: #ebedf0; /* empty heatmap squares */
+  --chip: #f4f4f5; /* icon chips, empty calendar days */
+  --line: #e4e4e7; /* hairline borders in inline styles */
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --surface: #111113;
+  --empty: #27272a;
+  --chip: #27272a;
+  --line: #3f3f46;
+
+  /* Flip the zinc scale so existing text-zinc-* / bg-zinc-* / border-zinc-* classes just work. */
+  --color-zinc-50: #0a0a0a;
+  --color-zinc-100: #18181b;
+  --color-zinc-200: #27272a;
+  --color-zinc-300: #3f3f46;
+  --color-zinc-400: #71717a;
+  --color-zinc-500: #a1a1aa;
+  --color-zinc-600: #d4d4d8;
+  --color-zinc-700: #e4e4e7;
+  --color-zinc-800: #f4f4f5;
+  --color-zinc-900: #fafafa;
+  --color-zinc-950: #ffffff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

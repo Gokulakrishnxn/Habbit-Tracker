@@ -64,7 +64,7 @@ export default function HabitCalendar({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-t-2xl bg-white p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-xl sm:rounded-2xl"
+        className="w-full max-w-md rounded-t-2xl bg-surface p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-xl sm:rounded-2xl"
       >
         <div className="mb-4 flex items-center gap-3">
           <span className="grid size-8 place-items-center rounded-lg text-white" style={{ backgroundColor: habit.color }}>
@@ -122,8 +122,8 @@ export default function HabitCalendar({
                 onClick={() => onChange(key, nextCount(count, habit.goal))}
                 aria-label={`${date.toDateString()}: ${habit.goal > 1 ? `${count}/${habit.goal}` : count ? "done" : "not done"}`}
                 style={{
-                  backgroundColor: level === 0 ? "#f4f4f5" : `color-mix(in srgb, ${habit.color} ${mix}%, #f4f4f5)`,
-                  color: level <= 1 ? "#18181b" : "#fff",
+                  backgroundColor: level === 0 ? "var(--chip)" : `color-mix(in srgb, ${habit.color} ${mix}%, var(--chip))`,
+                  color: level <= 1 ? "var(--color-zinc-900)" : "#fff",
                 }}
                 className={`relative flex aspect-square min-h-11 flex-col items-center justify-center rounded-xl text-sm font-medium disabled:opacity-30 ${
                   key === todayKey ? "outline-2 outline-offset-1 outline-zinc-900" : ""

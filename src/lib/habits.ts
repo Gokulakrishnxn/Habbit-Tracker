@@ -17,6 +17,24 @@ export const ICON_NAMES = [
   "star",
   "pill",
   "check",
+  "bike",
+  "zap",
+  "apple",
+  "bed",
+  "smile",
+  "target",
+  "clock",
+  "camera",
+  "home",
+  "dollar",
+  "wind",
+  "mountain",
+  "eye",
+  "lightbulb",
+  "message",
+  "shield",
+  "gift",
+  "cloud",
 ] as const;
 export type IconName = (typeof ICON_NAMES)[number];
 
@@ -34,6 +52,18 @@ export const PALETTE = [
   "#8b5cf6", // violet
   "#b45309", // brown
   "#52525b", // graphite
+  "#f43f5e", // rose
+  "#d946ef", // fuchsia
+  "#a855f7", // purple
+  "#3b82f6", // blue
+  "#06b6d4", // cyan
+  "#10b981", // emerald
+  "#eab308", // yellow
+  "#84cc16", // spring green
+  "#64748b", // slate
+  "#78350f", // coffee
+  "#0f766e", // deep teal
+  "#be123c", // crimson
 ];
 
 export const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
