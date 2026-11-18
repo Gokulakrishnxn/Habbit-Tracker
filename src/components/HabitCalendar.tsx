@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import HabitIcon from "@/components/HabitIcon";
 import { dateKey, levelOf, nextCount, type Habit } from "@/lib/habits";
 
@@ -43,10 +43,25 @@ export default function HabitCalendar({
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ];
 
-  let doneDays = 0;
+  // Tracking starts at the earliest of the habit's creation date and its first logged day.
+  const startKey = useMemo(() => {
+    const logged = Object.keys(days ?? {}).filter((k) => (days?.[k] ?? 0) > 0);
+    const all = [...logged, ...(habit.createdAt ? [habit.createdAt] : [])].sort();
+    return all[0] ?? null;
+  }, [days, habit.createdAt]);
+
+  // Completed = goal met. Missed = a scheduled, already-finished day (before today, since the start) with the goal not met.
+  const completed: number[] = [];
+  const missed: number[] = [];
   for (let d = 1; d <= daysInMonth; d++) {
-    if ((days?.[dateKey(new Date(view.y, view.m, d))] ?? 0) >= habit.goal) doneDays++;
+    const date = new Date(view.y, view.m, d);
+    const key = dateKey(date);
+    if ((days?.[key] ?? 0) >= habit.goal) completed.push(d);
+    else if (startKey && key >= startKey && key < todayKey && habit.days.includes(date.getDay())) missed.push(d);
   }
+  const missedSet = new Set(missed);
+  const [tab, setTab] = useState<"completed" | "missed">("completed");
+  const listed = tab === "completed" ? completed : missed;
 
   const go = (delta: number) =>
     setView((v) => {
@@ -64,7 +79,7 @@ export default function HabitCalendar({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-t-2xl bg-surface p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-xl sm:rounded-2xl"
+        className="max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-surface p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-xl sm:rounded-2xl"
       >
         <div className="mb-4 flex items-center gap-3">
           <span className="grid size-8 place-items-center rounded-lg text-white" style={{ backgroundColor: habit.color }}>
@@ -73,7 +88,7 @@ export default function HabitCalendar({
           <div className="min-w-0 flex-1">
             <h2 className="truncate font-semibold text-zinc-900">{habit.name}</h2>
             <p className="text-xs text-zinc-500">
-              {doneDays} of {daysInMonth} days done
+              {completed.length} completed · {missed.length} missed
             </p>
           </div>
           <button onClick={onEdit} className="h-11 rounded-lg px-3 text-sm font-medium text-zinc-600 active:bg-zinc-100">
@@ -130,10 +145,54 @@ export default function HabitCalendar({
                 }`}
               >
                 <span className={level > 0 ? "text-[11px] leading-none opacity-80" : ""}>{day}</span>
+                {level === 0 && missedSet.has(day) && <span className="absolute bottom-1.5 size-1 rounded-full bg-red-500" aria-hidden />}
                 {level > 0 && <HabitIcon name={habit.icon} className="mt-0.5 size-3" />}
               </button>
             );
           })}
+        </div>
+
+        {/* Completed / missed summary with the dates */}
+        <div className="mt-4 rounded-xl border border-zinc-200 p-3">
+          <div className="grid grid-cols-2 gap-2" role="tablist">
+            {(
+              [
+                { id: "completed", label: "Completed", n: completed.length, color: habit.color },
+                { id: "missed", label: "Missed", n: missed.length, color: "#ef4444" },
+              ] as const
+            ).map((t) => (
+              <button
+                key={t.id}
+                role="tab"
+                aria-selected={tab === t.id}
+                onClick={() => setTab(t.id)}
+                className="flex min-h-14 flex-col items-start justify-center rounded-lg border px-3 text-left"
+                style={
+                  tab === t.id
+                    ? { borderColor: t.color, backgroundColor: `color-mix(in srgb, ${t.color} 12%, transparent)` }
+                    : { borderColor: "var(--line)" }
+                }
+              >
+                <span className="text-xl font-semibold leading-none text-zinc-900">{t.n}</span>
+                <span className="mt-1 text-xs text-zinc-500">{t.label} {t.n === 1 ? "day" : "days"}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {listed.length === 0 && (
+              <p className="text-xs text-zinc-500">{tab === "completed" ? "No completed days yet this month." : "No missed days this month."}</p>
+            )}
+            {listed.map((d) => (
+              <span
+                key={d}
+                className="rounded-full px-2.5 py-1 text-xs font-medium text-zinc-700"
+                style={{ backgroundColor: "var(--chip)" }}
+              >
+                {new Date(view.y, view.m, d).toLocaleDateString(undefined, { weekday: "short" })} {d}
+              </span>
+            ))}
+          </div>
         </div>
 
         {habit.goal > 1 && <p className="mt-3 text-center text-xs text-zinc-500">Tap a day to add one {habit.unit?.replace(/s$/, "")}; goal is {habit.goal}.</p>}

@@ -78,6 +78,8 @@ export type Habit = {
   unit?: string;
   /** Routine: weekdays (0 = Sunday) this habit is scheduled on. */
   days: number[];
+  /** YYYY-MM-DD the habit was created (used so days before it are not counted as missed). */
+  createdAt?: string;
 };
 
 export const HABITS: Habit[] = [

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import HabitIcon from "@/components/HabitIcon";
-import { ALL_DAYS, ICON_NAMES, PALETTE, routineLabel, type Habit } from "@/lib/habits";
+import { ALL_DAYS, ICON_NAMES, PALETTE, dateKey, routineLabel, type Habit } from "@/lib/habits";
 
 const DAY_LETTERS = ["S", "M", "T", "W", "T", "F", "S"];
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -59,6 +59,7 @@ export default function HabitForm({
       goal: counted ? goalNum : 1,
       unit: counted ? unit.trim() || "times" : undefined,
       days,
+      createdAt: initial?.createdAt ?? dateKey(new Date()),
     });
   };
 
