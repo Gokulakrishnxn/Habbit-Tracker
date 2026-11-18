@@ -157,11 +157,7 @@ export default function HabitHeatmap({
         </div>
       </div>
 
-      <div className="mt-2 flex min-h-8 flex-wrap items-center justify-between gap-x-4 gap-y-1">
-        <p className="text-xs text-zinc-600">
-          {selected ? label(selected, selectedCount) : "Tap a square to log that day"}
-        </p>
-      </div>
+      {selected && <p className="mt-2 text-xs text-zinc-600">{label(selected, selectedCount)}</p>}
       {calendarOpen && (
         <HabitCalendar
           habit={habit}
