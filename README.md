@@ -4,14 +4,15 @@
 
 # Habit Tracker
 
-**Build routines you can see.** Log habits in a tap and watch them fill in as GitHub-style heatmaps.
+### Every habit. One place.
+
+My personal habit tracker, built for myself and now free for everyone.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)
-![Free and open source](https://img.shields.io/badge/Free_%26_open_source-%E2%9D%A4-EC4899?style=flat-square)
 
 <br />
 
@@ -23,103 +24,192 @@
 
 <br />
 
-## Overview
+## Meet Habit Tracker.
 
-Habit Tracker gives every habit its own colour, icon and heatmap. Skin care, water intake, gym, work, projects, reading, or anything you add yourself. Tap a square to log a day, and your streaks and history build up at a glance.
+Skin care. Water. The gym. Work. Side projects. Reading.
 
-It is designed phone-first (touch-friendly, safe-area aware) and scales up to tablet and desktop. Your data stays in your browser: no account, no server.
+The things that make a good day are scattered across notes, apps and memory. I wanted one place for all of them. One that is quick enough to use in a second, and beautiful enough that I actually want to open it.
 
-## Features
+So I built it.
 
-- **Heatmap per habit.** Two months side by side, with every date numbered, weekday labels down the side and today highlighted with a coloured border. Logged days fill with the habit's icon, and counted habits (like water) deepen in colour as you approach the goal.
-- **Month navigation.** Step forward or back through the months with the header arrows (up to 24 months back).
-- **Calendar view.** Tap a habit's header to open a full month calendar, log or fix any day, and see how many days you completed and missed, with the dates listed. Missed days are marked with a red dot.
-- **Your own habits.** The **+** button opens a form to add a habit: name, colour (24 to choose from), icon (36 to choose from), tracking mode and routine. Habits can be edited from their calendar, or edited and deleted from the Settings page.
-- **Two tracking modes.** Simple *done / not done*, or a *count* toward a daily goal with a unit (for example 8 glasses).
-- **Routines.** Schedule a habit for every day, weekdays, weekends or any custom set of days. Streaks only count the days it is scheduled.
-- **Settings page.** Manage every habit in one place: edit it, or delete it (with a confirmation) along with its history.
-- **Sidebar habit list.** All habits at a glance with today's status. Tapping one jumps to its heatmap.
-- **Light, dark and auto themes.** A small toggle in the top bar cycles *Auto*, *Light* and *Dark*. Auto follows your device setting live, with no flash on load.
-- **Responsive and touch-friendly.** Press feedback on squares, large tap targets, notch and home-bar safe areas, and a slide-in menu on phones.
-- **Local-first.** Everything is saved to `localStorage`, and changes sync across open tabs.
+Every habit gets its own colour, its own icon and its own heatmap. Tap a square and it fills in. Do that day after day and you can see the shape of your life on one screen.
 
-## Getting started
+No sign-up. No account. No noise.
 
-**Prerequisites:** Node.js 20 or newer.
+<br />
+
+## Simple on the surface.
+
+**One tap.** Log a day by tapping its square. Tap again to undo.
+
+**Every date, at a glance.** Each habit has a GitHub-style heatmap with every day numbered, and today wears a coloured border so you always know where you are. It fits as many months as your screen can hold: two on a phone, half a year on a desktop.
+
+**Yours, completely.** Add any habit you like. Pick from 24 colours and 36 icons. Count it (8 glasses of water) or simply tick it off. Choose the days it belongs to: every day, weekdays, weekends, or your own mix.
+
+**See how you did.** Open a habit's calendar to see exactly which days you completed and which you missed, with the dates listed.
+
+**Streaks that are fair.** A streak only counts the days a habit is scheduled for, so a rest day never breaks it.
+
+**Light. Dark. Auto.** Follows your device by default, with a small switch in the top bar when you want to choose.
+
+**Made for every screen.** Designed for the phone first, with big tap targets and the notch and home bar respected. It scales up to tablet and desktop, and you can add it to your Home Screen like a native app.
+
+**Private by design.** Everything lives in your browser. Nothing is sent anywhere. Export a backup file whenever you want to keep it safe or share it.
+
+<br />
+
+## Everything in its place.
+
+| Where | What you find there |
+| --- | --- |
+| **Home** | Today's progress and a heatmap for every habit |
+| **Sidebar** | All your habits and how today is going. Tap one to jump to it |
+| **Calendar** (tap a habit's name) | A full month, with completed and missed days |
+| **Settings** | Edit or delete any habit, and export or import your data |
+| **Top bar** | Switch between light, dark and auto |
+
+<br />
+
+## How to use.
+
+1. **Add your habits.** Tap the **+** button. Give it a name, pick a colour and an icon, choose *done / not done* or a *count* (like 8 glasses), and pick the days it belongs to. Six starter habits are already there: Skin care, Water intake, Gym, Work, Projects and Reading. Edit or delete any of them in Settings.
+2. **Log a day.** Tap its square in the habit's heatmap. Tap again to undo. For a counted habit like water, each tap adds one until you reach your goal.
+3. **Look back and fix a day.** Tap a habit's name to open its calendar. You can log any past day there, and see which days you completed and which you missed.
+4. **Move through time.** Use the arrows next to *Activity* to go forward or back.
+5. **Pick your look.** The small icon in the top bar switches between Auto, Light and Dark.
+6. **Keep it safe.** In **Settings → Your data**, export a backup file now and then. Import it on another device to bring everything with you.
+
+<br />
+
+## Make it yours: fork and deploy.
+
+Habit Tracker is free to copy. Run your own version on [Vercel](https://vercel.com) in a few minutes, and use it from anywhere.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FGokulakrishnxn%2FHabbit-Tracker)
+
+Or do it step by step:
+
+1. **Fork** this repository with the **Fork** button at the top of the GitHub page.
+2. Go to [vercel.com/new](https://vercel.com/new) and sign in with GitHub.
+3. **Import** your fork. Vercel detects Next.js on its own. Leave the settings as they are. No environment variables are needed.
+4. Click **Deploy**. In about a minute you get a live address like `your-project.vercel.app`.
+5. *Optional:* add your own domain under **Project → Settings → Domains**.
+
+From then on, every push to `main` deploys automatically.
+
+Prefer the command line? Run `npx vercel` in the project folder and follow the prompts.
+
+> **Good to know.** Your habits are saved in each person's own browser, not on a server. Everyone who opens your deployment gets their own private tracker.
+
+<br />
+
+## Add it to your Home Screen.
+
+Open your deployed app in your phone's browser, then add it like any other app. It opens full screen, with its own icon and no browser bars.
+
+| Device | Steps |
+| --- | --- |
+| **iPhone / iPad** (Safari) | Tap **Share**, then **Add to Home Screen**, then **Add** |
+| **Android** (Chrome) | Tap the **⋮** menu, then **Add to Home screen** (or **Install app**) |
+| **Desktop** (Chrome or Edge) | Click the **install** icon at the right of the address bar |
+
+> **Tip for iPhone.** An app added to the Home Screen can keep its own storage, separate from Safari. If it opens empty, export a backup in Safari (**Settings → Your data**) and import it in the Home Screen app.
+
+<br />
+
+## Run it locally.
+
+You need [Node.js](https://nodejs.org) 20 or newer.
 
 ```bash
-# install dependencies
 npm install
-
-# start the dev server
 npm run dev
 ```
 
-Then open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). That's it.
 
-| Script          | What it does                      |
-| --------------- | --------------------------------- |
-| `npm run dev`   | Start the development server      |
-| `npm run build` | Create an optimised production build |
-| `npm run start` | Serve the production build        |
-| `npm run lint`  | Run ESLint                        |
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the development server |
+| `npm run build` | Create a production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | Check the code |
 
-## Tech stack
+<br />
 
-| Area      | Choice                                                                 |
-| --------- | ---------------------------------------------------------------------- |
-| Framework | [Next.js](https://nextjs.org) (App Router)                             |
-| UI        | [React](https://react.dev) 19                                          |
-| Styling   | [Tailwind CSS](https://tailwindcss.com) 4 with CSS-variable theming    |
-| Language  | TypeScript                                                             |
-| Storage   | Browser `localStorage`, read through `useSyncExternalStore`            |
+## Under the hood.
 
-## Project structure
+| | |
+| --- | --- |
+| **Framework** | [Next.js](https://nextjs.org) (App Router) |
+| **UI** | [React](https://react.dev) 19 |
+| **Styling** | [Tailwind CSS](https://tailwindcss.com) 4, with light and dark themes built on CSS variables |
+| **Language** | TypeScript |
+| **Storage** | Your browser's `localStorage`, shared across open tabs |
 
 ```
 src/
 ├── app/
-│   ├── layout.tsx          # Root layout, viewport, theme boot script
-│   ├── page.tsx            # Home: the habit tracker
-│   ├── settings/page.tsx   # Settings: manage and delete habits
-│   └── globals.css         # Theme tokens (light / dark)
+│   ├── layout.tsx            Root layout, viewport and theme boot script
+│   ├── page.tsx              Home: the habit tracker
+│   ├── settings/page.tsx     Settings: manage and delete habits
+│   ├── manifest.ts           Web app manifest (Add to Home Screen)
+│   ├── icon.svg              App icon (light and dark)
+│   ├── apple-icon.tsx        iPhone home-screen icon
+│   └── pwa-icon/[size]/      Android and desktop install icons
 ├── components/
-│   ├── HabitTracker.tsx    # Page shell: header, month navigation, habit list
-│   ├── HabitHeatmap.tsx    # Per-habit heatmap card
-│   ├── HabitCalendar.tsx   # Month calendar sheet
-│   ├── HabitForm.tsx       # Add / edit habit sheet
-│   ├── HabitIcon.tsx       # Icon set (inline SVG)
-│   ├── SettingsHabits.tsx  # Habit management list for Settings
-│   ├── Sidebar.tsx         # Top bar, menu drawer, habit list, Settings link
-│   └── ThemeToggle.tsx     # Auto / Light / Dark switch
+│   ├── HabitTracker.tsx      Header, month navigation and the list of habits
+│   ├── HabitHeatmap.tsx      One habit's heatmap
+│   ├── HabitCalendar.tsx     Month calendar with completed and missed days
+│   ├── HabitForm.tsx         Add and edit a habit
+│   ├── HabitIcon.tsx         The icon set
+│   ├── SettingsHabits.tsx    Habit management for Settings
+│   ├── SettingsData.tsx      Export and import your data
+│   ├── Sidebar.tsx           Top bar, menu, habit list and Settings link
+│   └── ThemeToggle.tsx       Auto, light and dark
 └── lib/
-    ├── habits.ts           # Types, defaults, palette, streak and level logic
-    ├── store.ts            # localStorage store shared across components
-    └── theme.ts            # Theme preference helpers
+    ├── backup.ts             Backup file: export, validation, merge and replace
+    ├── habits.ts             Types, defaults, colours, streak logic
+    ├── logo.tsx              The logo mark used by the generated icons
+    ├── store.ts              The shared localStorage store
+    └── theme.ts              Theme helpers
 ```
 
-## How your data is stored
+<br />
 
-Two keys are kept in the browser:
+## Your data.
 
-| Key                | Contents                                          |
-| ------------------ | ------------------------------------------------- |
-| `habits:list:v1`   | Your habits (name, colour, icon, goal, routine)   |
-| `habits:v1`        | Logged counts, keyed by habit and `YYYY-MM-DD`    |
+Two keys live in your browser:
 
-Clearing site data removes your history. There is currently no export or cross-device sync.
+| Key | Holds |
+| --- | --- |
+| `habits:list:v1` | Your habits: name, colour, icon, goal and routine |
+| `habits:v1` | What you logged, by habit and date (`YYYY-MM-DD`) |
 
-## Ideas for later
+**Back it up. Move it. Share it.** In Settings, *Export backup* saves everything as one file. On another device, or for someone else, *Import backup* brings it in: **Merge** adds what's new to what you already have, **Replace** swaps it all.
 
-- Export and import your data
-- Reminders for scheduled habits
-- Optional account and sync across devices
+Clear your browser's site data and your history goes with it, so export a backup now and then. There is no automatic sync yet.
+
+<br />
+
+## What's next.
+
+- Reminders for the habits you schedule
+- Sync across your devices
 - Weekly and monthly summaries
 
-## Contributing
+<br />
 
-Habit Tracker is free and open source, and contributions are welcome. Found a bug or have an idea? Open an issue. Ready to help? Fork the repo, make your change on a branch, and open a pull request. Please run `npm run lint` before you submit.
+## Open source.
 
-## License
+Habit Tracker is free and open source, released under the [MIT License](LICENSE). Use it, change it, share it.
 
-Released under the [MIT License](LICENSE). Free to use, change and share, for anyone.
+Found a bug or have an idea? Open an issue. Want to help? Fork the repo, make your change on a branch, run `npm run lint`, and open a pull request.
+
+<br />
+
+<div align="center">
+
+*Make every day count.*
+
+</div>
